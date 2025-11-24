@@ -14,11 +14,22 @@
 # Séance 1 : Introduction au NoSQL et découverte de MongoDB - Plan détaillé (4h)
 
 ## 🎯 Objectifs de la séance
-- Comprendre les enjeux et limites du modèle relationnel face aux besoins modernes
-- Maîtriser les concepts fondamentaux du NoSQL et positionner MongoDB
-- Configurer un environnement de travail MongoDB complet
-- Réaliser les premières manipulations CRUD
-- Comprendre la flexibilité du modèle document
+
+### Objectifs pédagogiques
+À l'issue de cette séance, vous serez capable de :
+- **Comprendre** pourquoi et quand utiliser MongoDB plutôt qu'une base relationnelle
+- **Installer** et configurer un environnement MongoDB Atlas professionnel
+- **Manipuler** des documents JSON : insertion, lecture, modification, suppression
+- **Modéliser** des données en mode document (embedding vs références)
+- **Réaliser** un cas pratique complet de gestion de médiathèque
+
+### Lien avec le projet SteamCity
+Cette séance pose les fondations pour votre projet fil rouge **SteamCity.io**, une plateforme IoT de monitoring urbain. Les concepts d'aujourd'hui (documents flexibles, tableaux embarqués, timestamps) seront essentiels pour stocker les données de capteurs que vous manipulerez dans les prochaines séances.
+
+### Prérequis
+- Maîtrise du SQL (SELECT, JOIN, normalisation)
+- Bases de JavaScript ou Python
+- Compte email universitaire valide
 
 ---
 
