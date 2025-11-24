@@ -213,44 +213,235 @@ Sharded Cluster (Horizontal scaling)
 
 ---
 
-## 💻 Phase 2 : Installation et configuration
+## 💻 Phase 2 : Installation et configuration (45 min)
 
-### 2.1 Création du compte MongoDB Atlas
+**Objectif :** Créer un environnement MongoDB professionnel et gratuit dans le cloud. À la fin de cette phase, vous aurez :
+- Un cluster MongoDB hébergé gratuitement (512 Mo)
+- Les outils nécessaires pour interagir avec MongoDB
+- Une connexion fonctionnelle testée
 
-#### Étapes détaillées
-1. Navigateur → https://www.mongodb.com/atlas/database
-2. "Try Free" → Sign Up
-3. Formulaire :
-   - Email : utiliser email universitaire
-   - Password : min 8 caractères
-   - Prénom, Nom
-   - Company : "Aix-Marseille Université"
-   - Accepter les conditions
-4. Vérifier email et confirmer
-5. Questionnaire rapide :
-   - Goal : "Learn MongoDB"
-   - Experience : "Student"
-   - Language : "JavaScript"
+---
 
-### 2.2 Déploiement du cluster gratuit
+### 2.1 Création du compte MongoDB Atlas (10 min)
 
-#### Configuration du cluster
-1. "Build a Database" → "FREE Shared"
-2. Configuration :
-   Provider : AWS (recommandé)
-   Region : Paris (eu-west-3) - IMPORTANT pour la latence
-   Cluster Tier : M0 Sandbox (FREE)
-   Cluster Name : BUT3-[VotreNom]
-   
-3. Security Quickstart :
-   Username : etudiant
-   Password : [Générer] → NOTER LE MOT DE PASSE !
-   
-4. Network Access :
-   "Add My Current IP Address"
-   Puis "Add IP Address" → 0.0.0.0/0 (pour accès universel)
-   
-5. "Finish and Close"
+#### 🤔 Qu'est-ce que MongoDB Atlas ?
+
+**MongoDB Atlas** est le service cloud officiel de MongoDB. C'est une **Database-as-a-Service (DBaaS)** qui vous permet d'avoir une base de données MongoDB sans installer de logiciel sur votre machine.
+
+**Avantages :**
+- ✅ Gratuit jusqu'à 512 Mo (largement suffisant pour apprendre)
+- ✅ Accessible depuis n'importe où (IUT, maison, mobile)
+- ✅ Sauvegardes automatiques
+- ✅ Monitoring intégré
+- ✅ Pas de configuration serveur nécessaire
+
+**Architecture simplifiée :**
+```
+Votre ordinateur (client)
+    ↓ Internet
+MongoDB Atlas (cloud AWS/Google/Azure)
+    ↓
+Replica Set (3 serveurs pour haute disponibilité)
+    ↓
+Vos données (documents JSON)
+```
+
+---
+
+#### 📝 Étape 1.1 : Inscription
+
+1. **Ouvrir votre navigateur** et aller sur : https://www.mongodb.com/atlas/database
+
+2. **Cliquer sur "Try Free"** (en haut à droite)
+
+3. **Remplir le formulaire d'inscription :**
+   ```
+   ┌─────────────────────────────────────┐
+   │ Email : votre.nom@etu.univ-amu.fr   │
+   │ Password : ********** (min 8 car.)  │
+   │ First Name : Votre prénom           │
+   │ Last Name : Votre nom               │
+   │ Company : Aix-Marseille Université  │
+   │ ☑ I agree to the Terms of Service   │
+   │                                     │
+   │        [Create your account]        │
+   └─────────────────────────────────────┘
+   ```
+
+   ⚠️ **Conseils pour le mot de passe :**
+   - Au moins 8 caractères
+   - Mélange de majuscules, minuscules et chiffres
+   - Notez-le immédiatement dans un fichier texte sécurisé
+   - Exemple valide : `MongoTP2024!`
+
+4. **Vérifier votre email**
+   - Ouvrir votre boîte mail universitaire
+   - Chercher l'email de MongoDB (vérifier les spams si besoin)
+   - Cliquer sur "Verify Email"
+
+5. **Questionnaire de bienvenue** (optionnel mais rapide)
+   ```
+   What is your goal? → "Learn MongoDB"
+   What's your experience level? → "Student"
+   What language will you use? → "JavaScript"
+   ```
+
+✅ **Checkpoint :** Vous devez maintenant voir le tableau de bord Atlas avec le bouton "Build a Database"
+
+---
+
+### 2.2 Déploiement du cluster gratuit (15 min)
+
+#### 🤔 Qu'est-ce qu'un cluster ?
+
+Un **cluster** est un groupe de serveurs MongoDB qui travaillent ensemble. Même dans l'offre gratuite, Atlas vous donne un **Replica Set** de 3 serveurs :
+- 1 serveur **Primary** (lecture + écriture)
+- 2 serveurs **Secondary** (copies automatiques pour sécurité)
+
+Si le Primary tombe en panne → un Secondary devient automatiquement Primary. Vos données sont donc **toujours disponibles** !
+
+---
+
+#### 📝 Étape 2.1 : Créer le cluster
+
+1. **Cliquer sur "Build a Database"** (gros bouton vert au centre)
+
+2. **Choisir le plan gratuit :**
+   ```
+   ┌──────────────────────────────────────────┐
+   │ Shared Clusters                          │
+   │ ┌────────────────────────────────────┐   │
+   │ │ M0 Sandbox (SHARED)         FREE   │ ← Choisir celui-ci
+   │ │ 512 MB Storage                     │
+   │ │ Shared RAM                         │
+   │ │ No backup                          │
+   │ │        [Create cluster]            │
+   │ └────────────────────────────────────┘   │
+   └──────────────────────────────────────────┘
+   ```
+
+3. **Configuration du cluster :**
+
+   **a) Cloud Provider & Region**
+   ```
+   Provider : AWS (recommandé pour l'Europe)
+   ┌─────────────────────────────────────────┐
+   │ Region : Paris (eu-west-3)       5ms    │ ← IMPORTANT
+   │ Region : Frankfurt (eu-central-1) 15ms  │
+   │ Region : Ireland (eu-west-1)     25ms   │
+   └─────────────────────────────────────────┘
+   ```
+
+   💡 **Pourquoi Paris ?** La latence (temps de réponse) sera meilleure depuis Aix-en-Provence. Mais si Paris est indisponible, Frankfurt ou Ireland fonctionnent très bien aussi.
+
+   **b) Cluster Tier**
+   ```
+   M0 Sandbox (FREE forever) ← Déjà sélectionné
+   512 MB Storage
+   Shared RAM
+   ```
+
+   **c) Cluster Name**
+   ```
+   Cluster Name : BUT3-VotreNom
+   Exemple : BUT3-Nedjar ou BUT3-Maria
+   ```
+
+   💡 Ce nom vous aidera à identifier votre cluster si vous en créez plusieurs.
+
+4. **Cliquer sur "Create Cluster"** (en bas à droite)
+
+⏱️ **Patience !** Le cluster prend 1 à 3 minutes à démarrer. Vous verrez :
+```
+┌──────────────────────────────────────┐
+│ BUT3-VotreNom                        │
+│ Status : Creating...  [||||    ]    │
+│ Region : Paris (eu-west-3)           │
+└──────────────────────────────────────┘
+```
+
+Puis :
+```
+┌──────────────────────────────────────┐
+│ BUT3-VotreNom              ✓ Active │
+│ Connection String : mongodb+srv://.. │
+│ [Connect] [Browse Collections]      │
+└──────────────────────────────────────┘
+```
+
+✅ **Checkpoint :** Votre cluster affiche "Active" avec une pastille verte
+
+---
+
+#### 📝 Étape 2.2 : Configuration de la sécurité
+
+MongoDB Atlas a 2 niveaux de sécurité obligatoires :
+1. **Authentification** : username + password
+2. **Autorisation réseau** : liste des IP autorisées
+
+**a) Créer un utilisateur de base de données**
+
+Un message apparaît : "Security Quickstart"
+```
+┌────────────────────────────────────────────┐
+│ How would you like to authenticate?       │
+│ ○ Username and Password (recommended)     │ ← Sélectionner
+│ ○ Certificate                             │
+│                                           │
+│ Username : etudiant                       │
+│ Password : [Generate]  [Copy]  □ Show    │
+│                                           │
+│ ⚠️ IMPORTANT: Save this password!         │
+│ You won't be able to see it again.       │
+│                                           │
+│        [Create User]                      │
+└────────────────────────────────────────────┘
+```
+
+⚠️ **TRÈS IMPORTANT :**
+1. Cliquer sur **"Generate"** pour générer un mot de passe sécurisé
+2. Cliquer sur **"Copy"** pour copier le mot de passe
+3. **COLLER le mot de passe dans un fichier texte** (NotePad, VS Code, etc.)
+4. Nommer ce fichier `mongo-credentials.txt` et le sauvegarder
+
+Exemple de mot de passe généré : `Xy7$mK9pQ2nL`
+
+💡 Si vous perdez ce mot de passe, il faudra en créer un nouveau dans Atlas → Database Access
+
+**b) Autoriser l'accès réseau**
+
+Atlas affiche ensuite :
+```
+┌────────────────────────────────────────────┐
+│ Where would you like to connect from?     │
+│                                           │
+│ ☑ My Local Environment                   │
+│                                           │
+│ Add entries to your IP Access List:      │
+│                                           │
+│ [Add My Current IP Address]              │ ← Cliquer ici d'abord
+│                                           │
+│ IP Address : 92.154.78.142 ✓ Added       │
+│                                           │
+│ Then, for learning purposes only:        │
+│ [Add IP Address]                         │ ← Puis cliquer ici
+│   IP : 0.0.0.0/0                         │ ← Taper ceci
+│   Description : Accès universel          │
+│   [Add Entry]                            │
+└────────────────────────────────────────────┘
+```
+
+**Pourquoi 0.0.0.0/0 ?**
+- Cela signifie "autoriser toutes les IP"
+- ⚠️ **DANGER en production** mais **OK pour apprendre**
+- Permet de se connecter depuis l'IUT, la maison, un café, etc.
+- Vos données restent protégées par le username/password
+
+5. **Cliquer sur "Finish and Close"**
+
+✅ **Checkpoint :** Vous voyez votre cluster avec le bouton "Connect" actif
+
+---
 
 #### ⚠️ Problèmes fréquents lors du déploiement
 
@@ -271,41 +462,297 @@ Sharded Cluster (Horizontal scaling)
 - **Cause :** Serveurs Atlas surchargés
 - **Solution :** Patienter jusqu'à 10 minutes. Si toujours bloqué, supprimer et recréer le cluster
 
-### 2.3 Installation des outils
+### 2.3 Installation des outils (20 min)
 
-#### MongoDB Compass (GUI)
-1. Télécharger depuis : https://www.mongodb.com/products/compass
-2. Installer (version stable, pas beta)
-3. Lancer Compass
-4. Dans Atlas : "Connect" → "Connect with MongoDB Compass"
-5. Copier la connection string
-6. Dans Compass : coller et remplacer <password>
-7. "Connect" → Vous devez voir 3 bases système
+Pour interagir avec MongoDB, nous allons installer 3 outils complémentaires :
 
-#### Shell MongoDB (CLI)
+| Outil | Type | Usage | Quand l'utiliser |
+|-------|------|-------|------------------|
+| **MongoDB Compass** | Interface graphique (GUI) | Explorer visuellement les données | Découvrir, visualiser, déboguer |
+| **mongosh** | Ligne de commande (CLI) | Exécuter des requêtes MongoDB | Scripts, automatisation, TP |
+| **VS Code Extension** | Intégré à l'éditeur | Coder et tester rapidement | Développement d'applications |
 
+💡 **Conseil :** Installez les 3 ! Vous utiliserez Compass au début, puis de plus en plus mongosh.
+
+---
+
+#### 📝 Étape 3.1 : Installer MongoDB Compass
+
+**MongoDB Compass** est l'interface graphique officielle de MongoDB. C'est comme phpMyAdmin pour MySQL mais en beaucoup plus moderne !
+
+**1. Téléchargement**
+- Aller sur : https://www.mongodb.com/products/compass
+- Cliquer sur "Download Compass"
+- Choisir votre système d'exploitation (détecté automatiquement)
+- **Important :** Télécharger la version **Compass** (pas Compass Readonly)
+
+**2. Installation**
+
+**Windows :**
+```
+1. Double-cliquer sur le fichier .exe téléchargé
+2. Accepter les permissions administrateur
+3. Laisser les options par défaut
+4. Attendre l'installation (2-3 minutes)
+5. Cocher "Launch MongoDB Compass"
+```
+
+**macOS :**
+```
+1. Ouvrir le fichier .dmg
+2. Glisser MongoDB Compass dans Applications
+3. Ouvrir Applications → MongoDB Compass
+4. Autoriser l'ouverture (Sécurité système)
+```
+
+**Linux :**
 ```bash
-# Windows (PowerShell en admin)
+# Ubuntu/Debian
+wget https://downloads.mongodb.com/compass/mongodb-compass_1.42.0_amd64.deb
+sudo dpkg -i mongodb-compass_1.42.0_amd64.deb
+
+# Fedora/Red Hat
+sudo rpm -i mongodb-compass-1.42.0.x86_64.rpm
+```
+
+**3. Première connexion à votre cluster**
+
+a) **Dans MongoDB Atlas :**
+   ```
+   1. Cliquer sur le bouton "Connect" de votre cluster
+   2. Choisir "Connect with MongoDB Compass"
+   3. Copier la connection string :
+
+   mongodb+srv://etudiant:<password>@but3-votrenom.xxxxx.mongodb.net/
+   ```
+
+b) **Dans MongoDB Compass :**
+   ```
+   ┌────────────────────────────────────────────────┐
+   │ New Connection                                 │
+   │                                                │
+   │ URI : mongodb+srv://etudiant:Xy7$mK9pQ2nL@... │
+   │                                                │
+   │ ⚠️ IMPORTANT : Remplacer <password> par       │
+   │    votre vrai mot de passe !                  │
+   │                                                │
+   │ [Save & Connect]                              │
+   └────────────────────────────────────────────────┘
+   ```
+
+c) **Vérification :**
+   Après connexion, vous devez voir dans la barre latérale gauche :
+   ```
+   📁 Databases
+    ├─ admin (0.00 GB)
+    ├─ config (0.00 GB)
+    └─ local (0.00 GB)
+   ```
+
+   💡 Ces 3 bases sont des bases système MongoDB. C'est normal de les voir vides !
+
+✅ **Checkpoint :** Compass affiche 3 bases de données (admin, config, local)
+
+---
+
+#### 📝 Étape 3.2 : Installer mongosh (MongoDB Shell)
+
+**mongosh** est le shell en ligne de commande pour MongoDB. C'est l'outil principal pour les TP !
+
+**Pourquoi utiliser le shell ?**
+- ✅ Plus rapide que Compass pour les requêtes simples
+- ✅ Permet de créer des scripts
+- ✅ Nécessaire pour les fonctions avancées
+- ✅ Utilisé en production par tous les DevOps
+
+**Installation selon votre système :**
+
+**Windows :**
+```powershell
+# Méthode 1 : Avec winget (recommandé, Windows 10+)
 winget install MongoDB.Shell
 
-# macOS
+# Méthode 2 : Manuelle
+# 1. Télécharger depuis : https://www.mongodb.com/try/download/shell
+# 2. Extraire le ZIP
+# 3. Ajouter le dossier bin\ au PATH Windows
+```
+
+**macOS :**
+```bash
+# Avec Homebrew (recommandé)
+brew tap mongodb/brew
 brew install mongosh
 
-# Linux
-sudo apt-get install mongodb-mongosh
+# Ou téléchargement manuel depuis mongodb.com
+```
 
-# Vérification
+**Linux :**
+```bash
+# Ubuntu/Debian
+wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-mongosh
+
+# Fedora
+sudo dnf install mongodb-mongosh
+```
+
+**Vérification de l'installation :**
+```bash
 mongosh --version
 ```
 
-#### Extension VS Code
+**Résultat attendu :**
 ```
-1. Ouvrir VS Code
-2. Extensions → Rechercher "MongoDB"
-3. Installer "MongoDB for VS Code" (officiel)
-4. View → Command Palette → "MongoDB: Connect"
-5. Coller la connection string
+2.1.1
 ```
+
+✅ **Checkpoint :** La commande `mongosh --version` affiche un numéro de version
+
+---
+
+#### 📝 Étape 3.3 : Première connexion avec mongosh
+
+**1. Récupérer votre connection string**
+
+Dans Atlas :
+```
+1. Cluster → Connect
+2. Choisir "Connect with MongoDB Shell"
+3. Copier la commande :
+
+mongosh "mongodb+srv://but3-votrenom.xxxxx.mongodb.net/" --apiVersion 1 --username etudiant
+```
+
+**2. Se connecter**
+
+```bash
+# Coller la commande dans votre terminal
+mongosh "mongodb+srv://but3-votrenom.xxxxx.mongodb.net/" --apiVersion 1 --username etudiant
+
+# Il vous demande le mot de passe :
+Enter password: ************
+```
+
+**3. Vérification**
+
+Si la connexion réussit, vous voyez :
+```
+Current Mongosh Log ID: 65abc123def456789
+Connecting to: mongodb+srv://...
+Using MongoDB: 7.0.5
+Using Mongosh: 2.1.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+Atlas atlas-xxxxx-shard-0 [primary] test>
+```
+
+💡 Le prompt `test>` signifie que vous êtes connecté à la base "test" par défaut.
+
+**4. Tester quelques commandes**
+
+```javascript
+// Afficher la version de MongoDB
+db.version()
+// → 7.0.5
+
+// Lister les bases de données
+show dbs
+// → admin   41 KB
+// → config  73 KB
+// → local  10.5 GB
+
+// Afficher la base actuelle
+db
+// → test
+
+// Quitter mongosh
+exit
+```
+
+✅ **Checkpoint :** Vous pouvez exécuter `show dbs` et voir les 3 bases système
+
+---
+
+#### 📝 Étape 3.4 : Installer l'extension VS Code (optionnel mais recommandé)
+
+**Pourquoi cette extension ?**
+- ✅ Exécuter des requêtes MongoDB directement depuis VS Code
+- ✅ Autocomplétion intelligente
+- ✅ Visualiser les résultats dans l'éditeur
+- ✅ Créer des playgrounds (fichiers .mongodb)
+
+**Installation :**
+
+1. **Ouvrir VS Code**
+
+2. **Aller dans les Extensions**
+   - Raccourci : `Ctrl+Shift+X` (Windows/Linux) ou `Cmd+Shift+X` (Mac)
+   - Ou cliquer sur l'icône Extensions dans la barre latérale
+
+3. **Rechercher "MongoDB"**
+   ```
+   Rechercher : MongoDB
+
+   Résultat :
+   ┌─────────────────────────────────────────┐
+   │ MongoDB for VS Code                     │
+   │ by MongoDB                   ⭐⭐⭐⭐⭐ │
+   │ 5M+ downloads                           │
+   │ [Install]                               │
+   └─────────────────────────────────────────┘
+   ```
+
+4. **Installer l'extension officielle**
+   - Chercher celle publiée par "MongoDB" (pas les autres !)
+   - Cliquer sur "Install"
+
+5. **Se connecter à Atlas**
+
+   a) Ouvrir la palette de commandes :
+   - `Ctrl+Shift+P` (Windows/Linux) ou `Cmd+Shift+P` (Mac)
+
+   b) Taper : `MongoDB: Connect`
+
+   c) Choisir "Connect with Connection String"
+
+   d) Coller votre connection string :
+   ```
+   mongodb+srv://etudiant:VotreMotDePasse@but3-votrenom.xxxxx.mongodb.net/
+   ```
+
+6. **Vérification**
+
+   Dans la barre latérale gauche, vous voyez maintenant une icône MongoDB (feuille verte).
+   Cliquer dessus affiche vos connexions :
+   ```
+   CONNECTIONS
+   └─ 📁 but3-votrenom
+       ├─ admin
+       ├─ config
+       └─ local
+   ```
+
+7. **Créer un playground (optionnel)**
+
+   ```
+   1. Command Palette → "MongoDB: Create MongoDB Playground"
+   2. Un fichier playground-1.mongodb s'ouvre
+   3. Essayer cette commande :
+
+   use('test')
+   db.getCollectionNames()
+
+   4. Cliquer sur le bouton ▶ "Run" en haut
+   5. Les résultats s'affichent en dessous
+   ```
+
+✅ **Checkpoint :** L'extension MongoDB affiche votre cluster dans la barre latérale
+
+---
 
 #### ⚠️ Problèmes fréquents de connexion
 
@@ -333,14 +780,74 @@ mongosh --version
 - **Cause :** C'est NORMAL ! MongoDB est vide au départ
 - **Solution :** Passer à la Phase 3 pour créer votre première base
 
-### ✅ Point de validation #1
+### ✅ Point de validation final #1
 
-**Checklist :**
-- [ ] Cluster Atlas visible et "Running"
-- [ ] Connexion réussie via Compass
-- [ ] Au moins les bases de données `admin`, `config` et `local` visibles
-- [ ] `mongosh` fonctionne
-- [ ] VS Code connecté
+**Avant de passer à la Phase 3, vérifiez que vous avez :**
+
+**Compte et Cluster**
+- [ ] Compte MongoDB Atlas créé et vérifié
+- [ ] Cluster M0 déployé et actif (pastille verte)
+- [ ] Utilisateur "etudiant" créé avec mot de passe sauvegardé
+- [ ] IP 0.0.0.0/0 ajoutée dans Network Access
+
+**Outils installés**
+- [ ] MongoDB Compass installé et connecté
+- [ ] Les 3 bases système visibles dans Compass (`admin`, `config`, `local`)
+- [ ] `mongosh --version` fonctionne dans le terminal
+- [ ] `mongosh` peut se connecter à Atlas
+- [ ] Extension VS Code installée (optionnel)
+
+**Tests de connexion**
+
+Essayez ces commandes dans mongosh pour vérifier que tout fonctionne :
+
+```javascript
+// 1. Afficher la version
+db.version()
+// ✅ Doit afficher : 7.0.x
+
+// 2. Lister les bases
+show dbs
+// ✅ Doit afficher : admin, config, local
+
+// 3. Créer une base de test
+use test_connexion
+// ✅ Doit afficher : switched to db test_connexion
+
+// 4. Insérer un document test
+db.test.insertOne({message: "Ça marche !", date: new Date()})
+// ✅ Doit afficher : acknowledged: true, insertedId: ObjectId('...')
+
+// 5. Lire le document
+db.test.find()
+// ✅ Doit afficher votre document avec le message
+
+// 6. Nettoyer
+db.test.drop()
+use test_connexion
+db.dropDatabase()
+// ✅ Base de test supprimée
+```
+
+**Si tous les tests passent** → Vous êtes prêt pour la Phase 3 ! 🎉
+
+**Si un test échoue** → Relire la section troubleshooting ci-dessus ou demander de l'aide
+
+---
+
+### 📊 Récapitulatif de la Phase 2
+
+**Ce que vous avez appris :**
+1. MongoDB Atlas = base de données MongoDB dans le cloud (gratuite jusqu'à 512 Mo)
+2. Replica Set = 3 serveurs pour haute disponibilité
+3. Connection String = URL pour se connecter à MongoDB
+4. Compass = interface graphique (comme phpMyAdmin)
+5. mongosh = shell en ligne de commande (outil principal pour les TP)
+6. Sécurité à 2 niveaux : username/password + liste IP
+
+**Temps passé :** ~45 minutes
+**Outils installés :** Compass, mongosh, VS Code extension
+**Prochaine étape :** Phase 3 - Premières manipulations MongoDB
 
 ---
 
