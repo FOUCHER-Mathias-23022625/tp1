@@ -846,7 +846,9 @@ db.dropDatabase()
 6. Sécurité à 2 niveaux : username/password + liste IP
 
 **Temps passé :** ~45 minutes
+
 **Outils installés :** Compass, mongosh, VS Code extension
+
 **Prochaine étape :** Phase 3 - Premières manipulations MongoDB
 
 ---
