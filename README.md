@@ -355,7 +355,7 @@ Si le Primary tombe en panne → un Secondary devient automatiquement Primary. V
 ```
 ┌──────────────────────────────────────┐
 │ BUT3-VotreNom                        │
-│ Status : Creating...  [||||    ]    │
+│ Status : Creating...  [||||    ]     │
 │ Region : Paris (eu-west-3)           │
 └──────────────────────────────────────┘
 ```
@@ -363,9 +363,9 @@ Si le Primary tombe en panne → un Secondary devient automatiquement Primary. V
 Puis :
 ```
 ┌──────────────────────────────────────┐
-│ BUT3-VotreNom              ✓ Active │
+│ BUT3-VotreNom              ✓ Active  │
 │ Connection String : mongodb+srv://.. │
-│ [Connect] [Browse Collections]      │
+│ [Connect] [Browse Collections]       │
 └──────────────────────────────────────┘
 ```
 
@@ -384,17 +384,17 @@ MongoDB Atlas a 2 niveaux de sécurité obligatoires :
 Un message apparaît : "Security Quickstart"
 ```
 ┌────────────────────────────────────────────┐
-│ How would you like to authenticate?       │
-│ ○ Username and Password (recommended)     │ ← Sélectionner
-│ ○ Certificate                             │
-│                                           │
-│ Username : etudiant                       │
-│ Password : [Generate]  [Copy]  □ Show    │
-│                                           │
-│ ⚠️ IMPORTANT: Save this password!         │
-│ You won't be able to see it again.       │
-│                                           │
-│        [Create User]                      │
+│ How would you like to authenticate?        │
+│ ○ Username and Password (recommended)      │ ← Sélectionner
+│ ○ Certificate                              │
+│                                            │
+│ Username : etudiant                        │
+│ Password : [Generate]  [Copy]  □ Show      │
+│                                            │
+│ ⚠️ IMPORTANT: Save this password!          │
+│ You won't be able to see it again.         │
+│                                            │
+│        [Create User]                       │
 └────────────────────────────────────────────┘
 ```
 
@@ -413,21 +413,21 @@ Exemple de mot de passe généré : `Xy7$mK9pQ2nL`
 Atlas affiche ensuite :
 ```
 ┌────────────────────────────────────────────┐
-│ Where would you like to connect from?     │
-│                                           │
-│ ☑ My Local Environment                   │
-│                                           │
-│ Add entries to your IP Access List:      │
-│                                           │
-│ [Add My Current IP Address]              │ ← Cliquer ici d'abord
-│                                           │
-│ IP Address : 92.154.78.142 ✓ Added       │
-│                                           │
-│ Then, for learning purposes only:        │
-│ [Add IP Address]                         │ ← Puis cliquer ici
-│   IP : 0.0.0.0/0                         │ ← Taper ceci
-│   Description : Accès universel          │
-│   [Add Entry]                            │
+│ Where would you like to connect from?      │
+│                                            │
+│ ☑ My Local Environment                     │
+│                                            │
+│ Add entries to your IP Access List:        │
+│                                            │
+│ [Add My Current IP Address]                │ ← Cliquer ici d'abord
+│                                            │
+│ IP Address : 92.154.78.142 ✓ Added         │
+│                                            │
+│ Then, for learning purposes only:          │
+│ [Add IP Address]                           │ ← Puis cliquer ici
+│   IP : 0.0.0.0/0                           │ ← Taper ceci
+│   Description : Accès universel            │
+│   [Add Entry]                              │
 └────────────────────────────────────────────┘
 ```
 
@@ -531,12 +531,12 @@ b) **Dans MongoDB Compass :**
    ┌────────────────────────────────────────────────┐
    │ New Connection                                 │
    │                                                │
-   │ URI : mongodb+srv://etudiant:Xy7$mK9pQ2nL@... │
+   │ URI : mongodb+srv://etudiant:Xy7$mK9pQ2nL@...  │
    │                                                │
-   │ ⚠️ IMPORTANT : Remplacer <password> par       │
-   │    votre vrai mot de passe !                  │
+   │ ⚠️ IMPORTANT : Remplacer <password> par        │
+   │    votre vrai mot de passe !                   │
    │                                                │
-   │ [Save & Connect]                              │
+   │ [Save & Connect]                               │
    └────────────────────────────────────────────────┘
    ```
 
