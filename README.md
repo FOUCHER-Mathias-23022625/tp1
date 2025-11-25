@@ -35,15 +35,15 @@ Cette séance pose les fondations pour votre projet fil rouge, une plateforme Io
 
 La première chose que vous allez faire est de créer un fork personnel du présent dépôt. Pour ce faire, rendez-vous sur le lien suivant :
 
-<https://classroom.github.com/a/>
+<https://classroom.github.com/a/_ZYN3pwz>
 
-GitHub va vous créer un dépôt contenant un fork du dépôt 'IUTInfoAix-R510/Tp1' et s'appelant 'IUTInfoAix-R510/Tp1-votreUsername'. Vous apparaîtrez automatiquement comme contributeur de ce projet pour y pousser votre travail.
+GitHub va vous créer un dépôt contenant un fork du dépôt 'IUTInfoAix-R510/Tp1' et s'appelant 'IUTInfoAix-R510-2025/tp1-votreUsername'. Vous apparaîtrez automatiquement comme contributeur de ce projet pour y pousser votre travail.
 
 ## Ouverture de GitHub Codespace
 
 Une fois votre fork créé, vous pouvez ouvrir le projet directement dans GitHub Codespace :
 
-1. Rendez-vous sur votre dépôt GitHub (`IUTInfoAix-R510/Tp1-votreUsername`)
+1. Rendez-vous sur votre dépôt GitHub (`IUTInfoAix-R510-2025/tp1-votreUsername`)
 2. Cliquez sur le bouton vert **Code**
 3. Sélectionnez l'onglet **Codespaces**
 4. Cliquez sur **Create codespace on main**
