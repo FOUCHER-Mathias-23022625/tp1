@@ -164,32 +164,88 @@ Exemples concrets à présenter :
 
 #### Démonstration : Modéliser un tweet en relationnel
 Combien de tables pour un simple tweet ?
+<table style="width:100%">
+<tr>
+<th style="width:50%; background:#e3f2fd">🗄️ SQL (8 tables)</th>
+<th style="width:50%; background:#c8e6c9">📄 MongoDB (1 document)</th>
+</tr>
+<tr>
+<td>
+<pre>
+Table: Users
+Table: Tweets
+Table: Hashtags
+Table: Tweet_Hashtags
+Table: Mentions
+Table: Retweets
+Table: Likes
+Table: Media
 
-```sql
-CREATE TABLE users (...);
-CREATE TABLE tweets (...);
-CREATE TABLE hashtags (...);
-CREATE TABLE tweet_hashtags (...);
-CREATE TABLE mentions (...);
-CREATE TABLE retweets (...);
-CREATE TABLE likes (...);
-CREATE TABLE media (...);
-```
+Requête pour un tweet:
+SELECT * FROM tweets t
+JOIN users u ON t.user_id = u.id
+JOIN tweet_hashtags th ON t.id = th.tweet_id
+JOIN hashtags h ON th.hashtag_id = h.id
+JOIN mentions m ON t.id = m.tweet_id
+JOIN retweets r ON t.id = r.tweet_id
+JOIN likes l ON t.id = l.tweet_id
+JOIN media md ON t.id = md.tweet_id
+WHERE t.id = ?
+</pre>
+</td>
+<td>
+<pre>
+{
+  _id: ObjectId("..."),
+  user: {
+    name: "Alice",
+    avatar: "..."
+  },
+  text: "Mon tweet",
+  hashtags: ["mongodb", "nosql"],
+  mentions: ["@bob", "@charlie"],
+  likes: [
+    {user_id: "...", date: ...}
+  ],
+  media: [
+    {url: "...", type: "image"}
+  ],
+  retweets: [...],
+  created_at: ISODate("...")
+}
 
+Requête pour un tweet:
+db.tweets.findOne({_id: ObjectId("...")})
+</pre>
+</td>
+</tr>
+</table>
 Une simple consultation implique jusqu'à 8 JOINs sur des tables gigantesques !
+
 
 ### 1.2 Le théorème CAP et ses implications 
 
 #### Présentation du théorème
 ```
-            Consistency
-                /\
-               /  \
-              /    \
-             /      \
-            /________\
-Availability          Partition Tolerance
+                     Consistency
+                         (C)
+                         /\
+                        /  \
+                       /    \
+                      /      \
+                     /        \
+                    /          \
+                   /            \
+                  /              \
+                 /                \
+                /                  \
+               /                    \
+              /                      \
+             /________________________\
+          (A)                          (P)
+      Availability             Partition tolerance
 ```
+
 [Théorème CAP (Brewer, 2000)](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_CAP) : Un système distribué ne peut garantir au plus que 2 propriétés sur 3.
 
 #### Positionnement des solutions
