@@ -600,15 +600,37 @@ db.livres.find(
 // ────────────── Exercice 32 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {titre: "1984"},
+    {$set: {"auteur.nationalite": "Anglaise"}}
+)
+db.livres.findOne(
+    {titre: "1984"},
+    {titre: 1, auteur: 1, _id: 0}
+)
 
 // ────────────── Exercice 33 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {titre: "Harry Potter à l'école des sorciers"},
+    {$set: {"auteur.site_web": "https://www.jkrowling.com"}}
+)
+
+db.livres.findOne(
+    {titre: "Harry Potter à l'école des sorciers"},
+    {titre: 1, auteur: 1}
+)
 
 // ────────────── Exercice 34 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {isbn: "978-2-07-036822-8", "exemplaires.code": "LPP-001" },
+    {$set: {"exemplaires.$.etat": "Usé"}  }
+)
 
+db.livres.findOne({isbn: "978-2-07-036822-8"},{titre: 1, exemplaires: 1})
 
 // ─────────────────────────────────────────────────────────────────────────
 // 📍 Section 4.3 : Exercices de modification sur documents complexes (20 min)
@@ -617,27 +639,140 @@ db.livres.find(
 // ────────────── Exercice 35 ──────────────
 // Votre réponse :
 
+// 1. D'abord, voir la date actuelle
+db.livres.findOne(
+    {"exemplaires.emprunt_actuel.membre_id": "M001"},
+    {titre: 1, "exemplaires.$": 1}
+)
+
+// 2. Modifier la date (calculer nouvelle date)
+let nouvelle_date = new Date("2024-01-31")  // 7 jours après la date initiale
+
+db.livres.updateOne(
+    {
+        isbn: "978-2-07-036822-8",
+        "exemplaires.emprunt_actuel.membre_id": "M001"
+    },
+    {
+        $set: {
+            "exemplaires.$.emprunt_actuel.date_retour_prevue": nouvelle_date
+        }
+    }
+)
+
+// 3. Vérifier
+db.livres.findOne(
+    {"exemplaires.emprunt_actuel.membre_id": "M001"},
+    {titre: 1, "exemplaires.$": 1}
+)
 
 // ────────────── Exercice 36 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {isbn: "978-2-07-036822-8"},
+    {$push: {exemplaires: {
+                code: "LPP-004",
+                etat: "Neuf",
+                disponible: true,
+                emplacement: "Rayon A3"
+            }}})
 
 // ────────────── Exercice 37 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {isbn: "978-2-253-00334-0"},
+    {$pull: {exemplaires: {code: "1984-002"}}})
+
+db.livres.findOne(
+    {isbn: "978-2-253-00334-0"},
+    {titre: 1, exemplaires: 1}
+)
 
 // ────────────── Exercice 38 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {isbn: "978-2-07-041999-0"},
+    {$inc: {nombre_emprunts_total: 1}}
+)
+db.livres.findOne({isbn: "978-2-07-041999-0"})
 
 // ────────────── Exercice 39 ──────────────
 // Votre réponse :
+
+// Dates de l'emprunt
+let date_out = new Date()
+let date_in = new Date()
+
+
+date_in.setDate(14 + date_in.getDate() )
+
+// Mise à jour du livre
+db.livres.updateOne(
+    {
+        isbn: "978-2-07-041999-0",
+        "exemplaires.code": "HP1-003"
+    },
+    {
+        $set: {
+            "exemplaires.$.disponible": false,
+            "exemplaires.$.emprunt_actuel": {
+                membre_id: "M003",
+                date_out: date_out,
+                date_retour_prevue: date_in
+            }
+        },
+        $unset: {
+            "exemplaires.$.emplacement": ""  // L'exemplaire n'est plus au rayon
+        },
+        $inc: {nombre_emprunts_total: 1}
+    }
+)
+
+// Vérifier
+db.livres.findOne(
+    {isbn: "978-2-07-041999-0"},
+    {titre: 1, exemplaires: 1, nombre_emprunts_total: 1}
+)
 
 
 // ────────────── Exercice 40 ──────────────
 // Votre réponse :
 
+db.livres.updateOne(
+    {isbn: "978-2-07-036822-8","exemplaires.code": "LPP-002"},
+    {$set: {"exemplaires.$.disponible": true,
+            "exemplaires.$.emplacement": "À ranger"},
+            $unset: {"exemplaires.$.emprunt_actuel": ""}})
 
+// Vérifier
+db.livres.findOne(
+    {isbn: "978-2-07-036822-8"},
+    {titre: 1, "exemplaires.$": 1}
+)
+
+
+//Bonnus !! 
+
+db.livres.updateOne(
+    {isbn: "978-2-07-036822-8"},
+    {
+        $set: {
+            "exemplaires.$[elem].en_reparation": true
+        }
+    },
+    {
+        arrayFilters: [{"elem.etat": "Usé"}]  // Filtrer sur état = Usé
+    }
+)
+
+// Vérifier
+db.livres.findOne(
+    {isbn: "978-2-07-036822-8"},
+    {titre: 1, exemplaires: 1}
+)
 // ────────────── Exercice 41 ──────────────
 // Votre réponse :
 
